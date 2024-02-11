@@ -82,8 +82,10 @@ public class SecurityConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http)
             throws Exception {
         http
-                .authorizeHttpRequests((authorize) -> authorize
-                        .anyRequest().authenticated()
+                .authorizeHttpRequests((authorize) -> authorize.requestMatchers("/actuator/health")
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated()
                 )
                 // Form login handles the redirect to the login page from the
                 // authorization server filter chain
@@ -171,6 +173,9 @@ public class SecurityConfig {
                             .map(c -> c.replaceFirst("^ROLE_", ""))
                             .collect(Collectors.collectingAndThen(Collectors.toSet(), Collections::unmodifiableSet));
                     claims.put("roles", roles);
+//                    claims.put("userId",
+//                            ((CustomSpringUserDetails)context.getPrincipal()
+//                                    .getPrincipal()).getUser().getId());
                 });
             }
         };

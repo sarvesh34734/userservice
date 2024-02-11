@@ -56,16 +56,17 @@ public class RegisteredClientAddingTest {
 //        jpaRegisteredClientRepository.save(oidcClient);
 //    }
 
-    @Test
-    @Commit
-    public void addUserRole(){
-        Optional<User> user = userRepository.findByEmail("sarvesh_vyas@outlook.com");
-        Role role = new Role();
-        role.setRole("ADMIN");
-        roleRepository.save(role);
-        user.get().getRoles().add(role);
-        userRepository.save(user.get());
-    }
+//    @Test
+//    @Commit
+//    public void addUserRole(){
+//        Optional<User> user = userRepository.findByEmail("sarvesh_vyas1@outlook.com");
+//        Role role = new Role();
+//        role.setRole("SELLER");
+//        roleRepository.save(role);
+//
+//        user.get().getRoles().add(role);
+//        userRepository.save(user.get());
+//    }
 
 
 }
