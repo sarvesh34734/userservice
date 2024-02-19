@@ -14,7 +14,7 @@ import org.springframework.security.oauth2.server.authorization.client.Registere
 import java.util.Optional;
 
 @SpringBootApplication
-public class UserserviceApplication implements CommandLineRunner {
+public class UserserviceApplication {
 
 	@Autowired
 	private RegisteredClientRepository jpaRegisteredClientRepository;
@@ -32,14 +32,14 @@ public class UserserviceApplication implements CommandLineRunner {
 		SpringApplication.run(UserserviceApplication.class, args);
 	}
 
-	@Override
-	public void run(String... args) throws Exception {
-		Optional<User> user = userRepository.findByEmail("sarvesh_vyas1@outlook.com");
-		Role role = new Role();
-		role.setRole("SELLER");
-		roleRepository.save(role);
-
-		user.get().getRoles().add(role);
-		userRepository.save(user.get());
-	}
+//	@Override
+//	public void run(String... args) throws Exception {
+//		Optional<User> user = userRepository.findByEmail("sarvesh_vyas1@outlook.com");
+//		Role role = new Role();
+//		role.setRole("SELLER");
+//		roleRepository.save(role);
+//
+//		user.get().getRoles().add(role);
+//		userRepository.save(user.get());
+//	}
 }

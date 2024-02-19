@@ -1,7 +1,11 @@
 package dev.sarvesh.userservice.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.sarvesh.userservice.clients.KafkaProducerConfig;
 import dev.sarvesh.userservice.dtos.JwtDto;
 import dev.sarvesh.userservice.dtos.LoginDto;
+import dev.sarvesh.userservice.dtos.SendEmailDto;
 import dev.sarvesh.userservice.dtos.SessionStatus;
 import dev.sarvesh.userservice.dtos.UserDto;
 import dev.sarvesh.userservice.services.UserService;
@@ -25,7 +29,36 @@ import java.nio.file.AccessDeniedException;
 @AllArgsConstructor
 public class AuthController {
 
+    private static final String htmlContent = "<!DOCTYPE html>\n" +
+            "<html lang=\"en\">\n" +
+            "<head>\n" +
+            "    <meta charset=\"UTF-8\">\n" +
+            "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n" +
+            "    <title>Welcome to Your Company/Service Name!</title>\n" +
+            "</head>\n" +
+            "<body style=\"font-family: Arial, sans-serif;\">\n" +
+            "\n" +
+            "    <table style=\"max-width: 600px; margin: 0 auto; padding: 20px; border-collapse: collapse; border: 1px solid #ccc;\">\n" +
+            "        <tr>\n" +
+            "            <td style=\"text-align: center; background-color: #f8f8f8; padding: 10px;\">\n" +
+            "                <h1>Welcome to Kafka Notification Service!</h1>\n" +
+            "            </td>\n" +
+            "        </tr>\n" +
+            "        <tr>\n" +
+            "            <td style=\"padding: 20px;\">\n" +
+            "                <p>Hey there! Glad to see you here.</p>\n" +
+            "            </td>\n" +
+            "        </tr>\n" +
+            "    </table>\n" +
+            "\n" +
+            "</body>\n" +
+            "</html>";
+
     private UserService userService;
+
+    private KafkaProducerConfig kafkaProducerConfig;
+
+    private ObjectMapper objectMapper;
 
     @PostMapping("/login")
     public ResponseEntity<UserDto> loginUser(@RequestBody LoginDto loginDto){
@@ -43,7 +76,13 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<UserDto> signUp(@RequestBody UserDto user){
+    public ResponseEntity<UserDto> signUp(@RequestBody UserDto user) throws JsonProcessingException {
+        SendEmailDto dto = new SendEmailDto();
+        dto.setTo(user.getEmail());
+        dto.setFrom("sarvesh.vyas.2096@gmail.com");
+        dto.setSubject("Welcome to the kafka tutorial");
+        dto.setBody(htmlContent);
+        kafkaProducerConfig.send("sendEmail",objectMapper.writeValueAsString(dto));
         return ResponseEntity.created(URI.create(user.getName())).body(userService.createUser(user));
     }
 

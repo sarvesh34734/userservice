@@ -85,13 +85,13 @@ public class SecurityConfig {
                 .authorizeHttpRequests((authorize) -> authorize.requestMatchers("/actuator/health")
                         .permitAll()
                         .anyRequest()
-                        .authenticated()
+                        .permitAll()
                 )
                 // Form login handles the redirect to the login page from the
                 // authorization server filter chain
                 .formLogin(Customizer.withDefaults());
 
-        return http.build();
+        return http.csrf().disable().cors().disable().build();
     }
 
 //    @Bean
